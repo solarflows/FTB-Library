@@ -30,13 +30,10 @@ jobs:
           SAPS_TOKEN: ${{ secrets.SAPS_TOKEN }}
         with:
           arguments: build test publish --stacktrace --no-daemon
-      - name: Release to CurseForge
-        uses: gradle/gradle-build-action@v2
-        if: |
-          contains(github.ref, 'main') && !contains(github.event.head_commit.message, '[norelease]') && github.event.inputs.norelease != 'true'
-        env:
-          GIT_COMMIT: ${{ github.event.after }}
-          GIT_PREVIOUS_COMMIT: ${{ github.event.before }}
-          CURSEFORGE_KEY: ${{ secrets.CURSEFORGE_KEY }}
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v2
         with:
-          arguments: build curseforge --stacktrace --no-daemon
+          name: gradle-build-artifacts
+          path: |
+            fabric/build/libs/*
+            forge/build/libs/*
